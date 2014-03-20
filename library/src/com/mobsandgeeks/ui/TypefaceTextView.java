@@ -14,17 +14,19 @@
 
 package com.mobsandgeeks.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.TypedArray;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.mobsandgeeks.ui.R.styleable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Subclass of {@link TextView} that supports the <code>customTypeface</code> attribute from XML.
@@ -49,10 +51,13 @@ public class TypefaceTextView extends TextView {
 
     public TypefaceTextView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
+        
+        if(isInEditMode()) return;
+        
         if (mTypefaces == null) {
             mTypefaces = new HashMap<String, Typeface>();
         }
-
+        
         final TypedArray array = context.obtainStyledAttributes(attrs, styleable.TypefaceTextView);
         if (array != null) {
             final String typefaceAssetPath = array.getString(
@@ -70,8 +75,12 @@ public class TypefaceTextView extends TextView {
                 }
 
                 setTypeface(typeface);
+                
+                setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+                
             }
             array.recycle();
+            
         }
     }
 
